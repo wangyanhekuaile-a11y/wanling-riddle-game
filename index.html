@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智慧猜灯谜互动游戏</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            padding: 40px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #999;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+
+        .game-info {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .info-label {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .riddle-container {
+            background: #fff9e6;
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            min-height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .riddle-content {
+            font-size: 1.5em;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .hint {
+            color: #ff6b6b;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+
+        .input-container {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            width: 70%;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            border: 2px solid #ddd;
+            border-radius: 25px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            border-color: #667eea;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1em;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .hint-btn {
+            background: #ffc107;
+            color: #333;
+        }
+
+        .skip-btn {
+            background: #6c757d;
+            color: white;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+        }
+
+        .end-screen {
+            display: none;
+        }
+
+        .final-score {
+            font-size: 3em;
+            color: #667eea;
+            margin: 20px 0;
+        }
+
+        .restart-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            font-size: 1.1em;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .riddle-content {
+                font-size: 1.2em;
+            }
+
+            input[type="text"] {
+                width: 100%;
+            }
+
+            .buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="gameScreen">
+        <h1>🎯 智慧猜灯谜</h1>
+        <p class="subtitle">传统节日互动游戏</p>
+
+        <div class="game-info">
+            <div class="info-item">
+                <span class="info-label">当前题号</span>
+                <span class="info-value" id="currentQuestion">1</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">得分</span>
+                <span class="info-value" id="score">0</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">总题数</span>
+                <span class="info-value" id="totalQuestions">10</span>
+            </div>
+        </div>
+
+        <div class="progress-bar">
+            <div class="progress" id="progressBar" style="width: 10%"></div>
+        </div>
+
+        <div class="riddle-container">
+            <div class="riddle-content" id="riddleContent">加载中...</div>
+        </div>
+
+        <div class="input-container">
+            <input type="text" id="answerInput" placeholder="输入你的答案..." autocomplete="off">
+        </div>
+
+        <div class="buttons">
+            <button class="submit-btn" onclick="checkAnswer()">提交答案</button>
+            <button class="hint-btn" onclick="showHint()">💡 提示</button>
+            <button class="skip-btn" onclick="skipQuestion()">跳过</button>
+        </div>
+
+        <div id="message" class="message" style="display: none;"></div>
+    </div>
+
+    <div class="container end-screen" id="endScreen">
+        <h1>🎉 游戏结束</h1>
+        <p class="subtitle">恭喜你完成所有灯谜挑战</p>
+        <div class="final-score" id="finalScore">0</div>
+        <p>最终得分</p>
+        <p id="scoreMessage" style="margin: 20px 0; color: #666;"></p>
+        <button class="restart-btn" onclick="restartGame()">重新开始</button>
+    </div>
+
+    <script>
+        const riddles = [
+            {
+                question: "小时青，中时红，老时紫",
+                answer: "茄子",
+                hint: "一种蔬菜"
+            },
+            {
+                question: "千条线，万条线，掉在水里看不见",
+                answer: "雨",
+                hint: "天气现象"
+            },
+            {
+                question: "一只黑狗，不叫不吼",
+                answer: "默",
+                hint: "汉字谜"
+            },
+            {
+                question: "上边毛，下边毛，中间一颗黑葡萄",
+                answer: "眼睛",
+                hint: "人体部位"
+            },
+            {
+                question: "十个兄弟，分两边，白天干活，晚上休息",
+                answer: "手",
+                hint: "身体器官"
+            },
+            {
+                question: "五个兄弟，住在一起，名字不同，高矮不齐",
+                answer: "手指",
+                hint: "身体部位"
+            },
+            {
+                question: "远看像座山，近看不是山，上头水乱流，下头石头干",
+                answer: "船",
+                hint: "交通工具"
+            },
+            {
+                question: "小小一间房，只有一扇窗，唱歌又演戏，天天翻花样",
+                answer: "电视机",
+                hint: "家用电器"
+            },
+            {
+                question: "有头没有颈，身上冷冰冰，有翅不能飞，无脚也能行",
+                answer: "鱼",
+                hint: "动物"
+            },
+            {
+                question: "一位公公精神好，从小到大起得早，后来愈老愈睡懒，一睡不再起早朝",
+                answer: "太阳",
+                hint: "天体"
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+        let hintUsed = false;
+
+        function initGame() {
+            currentQuestion = 0;
+            score = 0;
+            hintUsed = false;
+            document.getElementById('gameScreen').style.display = 'block';
+            document.getElementById('endScreen').style.display = 'none';
+            loadQuestion();
+        }
+
+        function loadQuestion() {
+            if (currentQuestion >= riddles.length) {
+                endGame();
+                return;
+            }
+
+            const riddle = riddles[currentQuestion];
+            document.getElementById('riddleContent').textContent = riddle.question;
+            document.getElementById('currentQuestion').textContent = currentQuestion + 1;
+            document.getElementById('totalQuestions').textContent = riddles.length;
+            document.getElementById('score').textContent = score;
+            document.getElementById('progressBar').style.width = ((currentQuestion + 1) / riddles.length * 100) + '%';
+            document.getElementById('answerInput').value = '';
+            document.getElementById('message').style.display = 'none';
+            hintUsed = false;
+        }
+
+        function checkAnswer() {
+            const userAnswer = document.getElementById('answerInput').value.trim().toLowerCase();
+            const correctAnswer = riddles[currentQuestion].answer.toLowerCase();
+            const messageDiv = document.getElementById('message');
+
+            if (userAnswer === correctAnswer) {
+                let points = 10;
+                if (hintUsed) {
+                    points = 5;
+                }
+                score += points;
+                messageDiv.textContent = `✅ 回答正确！获得 ${points} 分`;
+                messageDiv.className = 'message success';
+                messageDiv.style.display = 'block';
+                
+                setTimeout(() => {
+                    currentQuestion++;
+                    loadQuestion();
+                }, 1500);
+            } else {
+                messageDiv.textContent = '❌ 答案不对，再试试！';
+                messageDiv.className = 'message error';
+                messageDiv.style.display = 'block';
+            }
+        }
+
+        function showHint() {
+            const riddle = riddles[currentQuestion];
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = `💡 提示：${riddle.hint}`;
+            messageDiv.className = 'message success';
+            messageDiv.style.display = 'block';
+            hintUsed = true;
+        }
+
+        function skipQuestion() {
+            currentQuestion++;
+            loadQuestion();
+        }
+
+        function endGame() {
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('endScreen').style.display = 'block';
+            document.getElementById('finalScore').textContent = score;
+
+            let message = '';
+            const maxScore = riddles.length * 10;
+            const percentage = (score / maxScore) * 100;
+
+            if (percentage >= 80) {
+                message = '太棒了！你是灯谜大师！🏆';
+            } else if (percentage >= 60) {
+                message = '很不错！继续加油！💪';
+            } else if (percentage >= 40) {
+                message = '还可以，再多练习吧！📚';
+            } else {
+                message = '再接再厉，你会越来越好的！🌟';
+            }
+
+            document.getElementById('scoreMessage').textContent = message;
+        }
+
+        function restartGame() {
+            initGame();
+        }
+
+        // 支持回车键提交
+        document.getElementById('answerInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                checkAnswer();
+            }
+        });
+
+        // 初始化游戏
+        initGame();
+    </script>
+</body>
+</html>
