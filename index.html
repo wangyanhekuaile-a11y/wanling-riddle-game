@@ -1021,22 +1021,45 @@
 
         /* 响应式设计 */
         @media (max-width: 768px) {
+            body {
+                font-size: 14px;
+            }
+
             .lantern-hero {
-                width: 150px;
-                height: 210px;
+                width: 120px;
+                height: 168px;
+            }
+
+            .riddle-card {
+                padding: 20px;
             }
 
             .riddle-text {
-                font-size: 1.5rem;
+                font-size: 1.3rem;
             }
 
             .stat-item {
-                padding: 4px 8px;
-                font-size: 0.8rem;
+                padding: 4px 6px;
+                font-size: 0.75rem;
+            }
+
+            .game-header {
+                padding: 8px 12px;
+            }
+
+            .header-lantern-icon {
+                width: 24px;
+                height: 24px;
             }
 
             .answer-input-wrapper {
                 flex-direction: column;
+                gap: 8px;
+            }
+
+            .answer-input {
+                padding: 12px 16px;
+                font-size: 1rem;
             }
 
             .submit-btn {
@@ -1046,14 +1069,119 @@
 
             .action-buttons {
                 flex-direction: column;
+                gap: 10px;
             }
 
             .action-btn {
                 width: 100%;
+                padding: 12px 20px;
             }
 
             .result-stats {
                 grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .result-stat-value {
+                font-size: 1.5rem;
+            }
+
+            .start-button {
+                padding: 12px 40px;
+                font-size: 1.1rem;
+            }
+
+            .difficulty-btn {
+                padding: 8px 16px;
+                font-size: 0.85rem;
+            }
+
+            .setting-toggle {
+                padding: 6px 12px;
+                font-size: 0.85rem;
+            }
+
+            .feedback-card {
+                padding: 30px 20px;
+                margin: 20px;
+            }
+
+            .feedback-icon {
+                font-size: 2.5rem;
+            }
+
+            .feedback-title {
+                font-size: 1.3rem;
+            }
+
+            .next-btn {
+                padding: 10px 30px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                font-size: 13px;
+            }
+
+            .lantern-hero {
+                width: 100px;
+                height: 140px;
+            }
+
+            .riddle-card {
+                padding: 15px;
+            }
+
+            .riddle-text {
+                font-size: 1.1rem;
+            }
+
+            .stat-item {
+                padding: 3px 5px;
+                font-size: 0.7rem;
+            }
+
+            .game-header {
+                padding: 6px 10px;
+            }
+
+            .header-lantern-icon {
+                width: 20px;
+                height: 20px;
+            }
+
+            .answer-input {
+                padding: 10px 14px;
+                font-size: 0.95rem;
+            }
+
+            .submit-btn {
+                height: 40px;
+            }
+
+            .action-btn {
+                padding: 10px 16px;
+                font-size: 0.85rem;
+            }
+
+            .result-stat-value {
+                font-size: 1.3rem;
+            }
+
+            .start-button {
+                padding: 10px 30px;
+                font-size: 1rem;
+            }
+
+            .difficulty-btn {
+                padding: 6px 12px;
+                font-size: 0.8rem;
+            }
+
+            .feedback-card {
+                padding: 25px 15px;
+                margin: 15px;
             }
         }
     </style>
